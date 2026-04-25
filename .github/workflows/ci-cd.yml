@@ -18,8 +18,24 @@ on:
         required: true
 
 jobs:
-  build-test-and-package:
-    runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
+        with:
+          python-version-file: .python-version
+
+      - name: Build Docker image
+        run: docker build -t projeto-final:${{ github.sha }} .
+  
+  tests:
+    needs: build
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout code
@@ -44,21 +60,37 @@ jobs:
 
       - name: Build Docker image
         run: docker build -t projeto-final:${{ github.sha }} .
+  
+  push:
+    needs: tests
+    runs-on: ubuntu-24.04
+    steps:
 
-      - name: Login to GHCR
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - name: GitHub Container Registry Login
         uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push image to GHCR
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      - name: Extract metadata for Docker
+        id: docker_meta
+        uses: docker/metadata-action@030e881283bb7a6894de51c315a6bfe6a94e05cf
+        with:
+            images: |
+              ghcr.io/ciro-mota/projeto-final
+            tags: type=sha,format=long
+            flavor: |
+              latest=true
+
+      - name: Build and Push Docker image
         uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f
+        env:
+          DOCKER_BUILD_SUMMARY: false
         with:
           context: .
           push: true
-          tags: |
-            ghcr.io/${{ github.repository_owner }}/projeto-final:latest
-            ghcr.io/${{ github.repository_owner }}/projeto-final:${{ github.sha }}
+          tags: ${{ steps.docker_meta.outputs.tags }}
