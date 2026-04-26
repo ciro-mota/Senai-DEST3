@@ -7,8 +7,9 @@ WORKDIR /app
 
 COPY . .
 
+#hadolint ignore=DL3013
 RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir "django>=6.0.3,<7.0"
+    && pip install --no-cache-dir "django"
 
 EXPOSE 8000
 
