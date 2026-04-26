@@ -3,7 +3,7 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = "django-insecure-colabepi-demo-key"
+SECRET_KEY = "TPfPGEhrV7iZqArZCZ7DQHDoPGpHbAsBfWmma//rjwc="
 DEBUG = True
 ALLOWED_HOSTS: list[str] = []
 
@@ -53,6 +53,17 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         "ENGINE": "django.db.backends.mysql", # Backend para MySQL ou MariaDB
+#         "HOST": "127.0.0.1", # Endereço do servidor de banco de dados
+#         "PORT": "3306", # Porta padrão do MySQL/MariaDB
+#         "USER": "root", # Nome de usuário do banco de dados
+#         "PASSWORD": None, # Senha do banco de dados (defina uma senha para o usuário root por segurança)
+#         "NAME": "aula", # Nome do banco de dados a ser usado (certifique-se de criar este banco de dados no MySQL/MariaDB antes de executar as migrações)
+#     }
+# }
 
 AUTH_PASSWORD_VALIDATORS = []
 
