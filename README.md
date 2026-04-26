@@ -64,7 +64,11 @@ projeto_final/
 6. Execute as migrações com `python manage.py migrate`.
 7. Inicie o servidor com `python manage.py runserver`.
 8. Crie o usuário administrativo manualmente com `python manage.py createsuperuser`.
-9. Acesse `http://127.0.0.1:8000/admin/` e utilize o cadastro de colaboradores pelo Django Admin.
+9. Acesso para Django Admin em `http://127.0.0.1:8000/admin/`.
+
+> [!NOTE]
+> Este projeto conta com um pequeno banco de dados de exemplo, com acesso através de credenciais User e Senha `ciromota`.
+> Para uso com banco de dados externo, descomente e edite as credenciais no arquivo `colabepi/settings.py`.
 
 ## 🐋 Docker
 
@@ -80,15 +84,9 @@ Execute:
 docker container run -d -p 8000:8000 projeto_final
 ```
 
-## 🧩 Administração
-
-- O Django Admin já permite criar novos usuários na seção de autenticação.
-- O acesso inicial deve ser com o usuário criado manualmente com `createsuperuser`.
-
 ## 📋 Backlog
 
 - [x] Situação de Aprendizagem 6
 - [ ] Situação de Aprendizagem 7
 - [ ] Situação de Aprendizagem 8
 - [ ] Situação de Aprendizagem 9
-- [ ] Situação de Aprendizagem 10
