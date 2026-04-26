@@ -8,8 +8,7 @@ permissions:
 
 on:
   push:
-    paths:
-     - 'Dockerfile'
+
   workflow_dispatch:
     inputs:
       manual_commit_message:
