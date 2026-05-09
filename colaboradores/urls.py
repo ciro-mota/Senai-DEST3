@@ -1,6 +1,18 @@
 from django.urls import path
 
-from .views import ColaboradorCreateView, ColaboradorDeleteView, ColaboradorListView, ColaboradorUpdateView
+from .views import (
+    ColaboradorCreateView,
+    ColaboradorDeleteView,
+    ColaboradorListView,
+    ColaboradorUpdateView,
+    EquipamentoCreateView,
+    EquipamentoDeleteView,
+    EquipamentoListView,
+    EquipamentoUpdateView,
+    EmprestimoCreateView,
+    EmprestimoListView,
+    EmprestimoUpdateView,
+)
 
 
 app_name = "colaboradores"
@@ -12,23 +24,12 @@ urlpatterns = [
     path("colaboradores/<int:pk>/excluir/", ColaboradorDeleteView.as_view(), name="excluir"),
 ]
 
-# Equipamentos
-from .views import (
-    EquipamentoListView,
-    EquipamentoCreateView,
-    EquipamentoUpdateView,
-    EquipamentoDeleteView,
-)
-
 urlpatterns += [
     path("equipamentos/", EquipamentoListView.as_view(), name="equipamento_lista"),
     path("equipamentos/novo/", EquipamentoCreateView.as_view(), name="equipamento_cadastrar"),
     path("equipamentos/<int:pk>/editar/", EquipamentoUpdateView.as_view(), name="equipamento_editar"),
     path("equipamentos/<int:pk>/excluir/", EquipamentoDeleteView.as_view(), name="equipamento_excluir"),
 ]
-
-# Empréstimos (EPI)
-from .views import EmprestimoListView, EmprestimoCreateView, EmprestimoUpdateView
 
 urlpatterns += [
     path("emprestimos/", EmprestimoListView.as_view(), name="emprestimo_lista"),

@@ -3,10 +3,9 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from .forms import ColaboradorForm
-from .models import Colaborador
 from .forms import EquipamentoForm, EmprestimoForm
 from .models import Equipamento, Emprestimo
-from django.shortcuts import redirect
+from .models import Colaborador
 
 
 class ColaboradorListView(ListView):

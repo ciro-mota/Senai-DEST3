@@ -1,18 +1,15 @@
 from django import forms
+from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 from .models import Colaborador
+from .models import Equipamento, Emprestimo
 
 
 class ColaboradorForm(forms.ModelForm):
     class Meta:
         model = Colaborador
         fields = ["nome", "matricula", "setor", "cargo", "ativo"]
-
-
-from django.utils import timezone
-from django.core.exceptions import ValidationError
-
-from .models import Equipamento, Emprestimo
 
 
 class EquipamentoForm(forms.ModelForm):
