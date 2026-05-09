@@ -1,0 +1,15 @@
+{% extends 'global/base.html' %}
+
+{% block title %}Excluir colaborador{% endblock %}
+
+{% block content %}
+<h1>Confirmar exclusão</h1>
+
+<div class="card" style="max-width:500px; padding: 16px 20px">
+  <p>Deseja realmente excluir o colaborador <strong>{{ object.nome }}</strong>?</p>
+  <form method="post" style="display:inline">
+    {% csrf_token %}
+    <button class="btn btn-danger" type="submit">Excluir</button>
+  </form>
+  <a class="btn btn-outline-secondary" href="{% url 'colaboradores:lista' %}">Cancelar</a>
+</div>
