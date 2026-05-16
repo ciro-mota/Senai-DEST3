@@ -260,6 +260,38 @@ body {
     margin-bottom: 12px;
 }
 
+/* Modals (wireframe) */
+dialog.app-modal {
+    border: none;
+    padding: 0;
+    background: transparent;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+    width: calc(100% - 32px);
+    max-width: 520px;
+    max-height: calc(100vh - 32px);
+    overflow: auto;
+}
+
+dialog.app-modal::backdrop {
+    background: rgba(0, 0, 0, 0.6);
+}
+
+dialog.app-modal .card {
+    background: #1e1e1c;
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.18);
+}
+
+dialog.app-modal .card h2,
+dialog.app-modal .card p,
+dialog.app-modal .card strong {
+    color: #fff;
+}
+
 .form-check input {
     margin-right: 8px;
 }

@@ -34,7 +34,12 @@
             <td style="white-space: nowrap;">
               <div style="display: inline-flex; gap: 8px; align-items: center;">
                 <a class="btn btn-sm btn-outline-primary" href="{% url 'colaboradores:equipamento_editar' e.pk %}">Editar</a>
-                <a class="btn btn-sm btn-outline-danger" href="{% url 'colaboradores:equipamento_excluir' e.pk %}">Excluir</a>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-danger js-delete"
+                  data-url="{% url 'colaboradores:equipamento_excluir' e.pk %}"
+                  data-name="{{ e.nome|escape }}"
+                >Excluir</button>
               </div>
             </td>
           </tr>
@@ -45,4 +50,38 @@
     </table>
   </div>
 </div>
+
+<dialog id="delete-equipamento-modal" class="app-modal">
+  <div class="card" style="padding: 16px 20px">
+    <h2 style="margin-top:0">Confirmar exclusão</h2>
+    <p>Deseja realmente excluir o equipamento <strong id="delete-equipamento-nome"></strong>?</p>
+    <form id="delete-equipamento-form" method="post" style="display:inline">
+      {% csrf_token %}
+      <button class="btn btn-danger" type="submit">Excluir</button>
+      <button class="btn btn-outline-secondary" type="button" id="delete-equipamento-cancel">Cancelar</button>
+    </form>
+  </div>
+</dialog>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function(){
+    const modal = document.getElementById('delete-equipamento-modal');
+    const form = document.getElementById('delete-equipamento-form');
+    const nomeEl = document.getElementById('delete-equipamento-nome');
+    const cancelBtn = document.getElementById('delete-equipamento-cancel');
+    if(!modal || !form || !nomeEl || !cancelBtn) return;
+
+    document.querySelectorAll('.js-delete[data-url]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        form.action = btn.getAttribute('data-url');
+        nomeEl.textContent = btn.getAttribute('data-name') || '';
+        if(typeof modal.showModal === 'function') modal.showModal();
+      });
+    });
+
+    cancelBtn.addEventListener('click', function(){
+      modal.close();
+    });
+  });
+</script>
   {% endblock %}

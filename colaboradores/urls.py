@@ -33,6 +33,7 @@ urlpatterns += [
 
 urlpatterns += [
     path("emprestimos/", EmprestimoListView.as_view(), name="emprestimo_lista"),
+    path("relatorios/", EmprestimoListView.as_view(), name="emprestimo_relatorios"),
     path("emprestimos/novo/", EmprestimoCreateView.as_view(), name="emprestimo_cadastrar"),
     path("emprestimos/<int:pk>/editar/", EmprestimoUpdateView.as_view(), name="emprestimo_editar"),
 ]

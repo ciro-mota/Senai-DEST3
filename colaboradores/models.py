@@ -1,4 +1,6 @@
 from django.db import models
+from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 
 class Colaborador(models.Model):
@@ -47,9 +49,9 @@ class Emprestimo(models.Model):
     colaborador = models.ForeignKey(Colaborador, on_delete=models.CASCADE, related_name="emprestimos")
     equipamento = models.ForeignKey(Equipamento, on_delete=models.CASCADE, related_name="emprestimos")
     quantidade = models.PositiveIntegerField(default=1)
-    data_entrega = models.DateField()
-    data_prevista_devolucao = models.DateField()
-    data_devolucao = models.DateField(null=True, blank=True)
+    data_entrega = models.DateTimeField()
+    data_prevista_devolucao = models.DateTimeField()
+    data_devolucao = models.DateTimeField(null=True, blank=True)
     observacao_devolucao = models.TextField(blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_EMPRESTADO)
     criado_em = models.DateTimeField(auto_now_add=True)
@@ -59,3 +61,14 @@ class Emprestimo(models.Model):
 
     def __str__(self) -> str:
         return f"{self.colaborador.nome} — {self.equipamento.nome} ({self.status})"
+
+    def clean(self):
+        super().clean()
+        if self.data_prevista_devolucao:
+            now = timezone.now()
+            if self.data_prevista_devolucao <= now:
+                raise ValidationError({"data_prevista_devolucao": "A data prevista para devolução deve ser posterior à data e hora atuais."})
+
+        if self.data_entrega and self.data_prevista_devolucao:
+            if self.data_prevista_devolucao <= self.data_entrega:
+                raise ValidationError({"data_prevista_devolucao": "A data prevista para devolução deve ser posterior à data e hora da entrega."})

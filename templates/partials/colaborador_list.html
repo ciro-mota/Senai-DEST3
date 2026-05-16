@@ -41,7 +41,12 @@
             <td>{% if colaborador.ativo %}Sim{% else %}Não{% endif %}</td>
             <td style="white-space:nowrap">
               <a class="btn btn-sm btn-outline-primary" href="{% url 'colaboradores:editar' colaborador.pk %}">Editar</a>
-              <a class="btn btn-sm btn-outline-danger" href="{% url 'colaboradores:excluir' colaborador.pk %}">Excluir</a>
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-danger js-delete"
+                data-url="{% url 'colaboradores:excluir' colaborador.pk %}"
+                data-name="{{ colaborador.nome|escape }}"
+              >Excluir</button>
             </td>
           </tr>
         {% empty %}
@@ -53,4 +58,38 @@
     </table>
   </div>
 </div>
+
+<dialog id="delete-colaborador-modal" class="app-modal">
+  <div class="card" style="padding: 16px 20px">
+    <h2 style="margin-top:0">Confirmar exclusão</h2>
+    <p>Deseja realmente excluir o colaborador <strong id="delete-colaborador-nome"></strong>?</p>
+    <form id="delete-colaborador-form" method="post" style="display:inline">
+      {% csrf_token %}
+      <button class="btn btn-danger" type="submit">Excluir</button>
+      <button class="btn btn-outline-secondary" type="button" id="delete-colaborador-cancel">Cancelar</button>
+    </form>
+  </div>
+</dialog>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function(){
+    const modal = document.getElementById('delete-colaborador-modal');
+    const form = document.getElementById('delete-colaborador-form');
+    const nomeEl = document.getElementById('delete-colaborador-nome');
+    const cancelBtn = document.getElementById('delete-colaborador-cancel');
+    if(!modal || !form || !nomeEl || !cancelBtn) return;
+
+    document.querySelectorAll('.js-delete[data-url]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        form.action = btn.getAttribute('data-url');
+        nomeEl.textContent = btn.getAttribute('data-name') || '';
+        if(typeof modal.showModal === 'function') modal.showModal();
+      });
+    });
+
+    cancelBtn.addEventListener('click', function(){
+      modal.close();
+    });
+  });
+</script>
   {% endblock %}

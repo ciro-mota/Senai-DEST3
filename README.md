@@ -59,6 +59,12 @@ projeto_final/
   - Tela Cadastro de Equipamentos.
   - Tela de Controle de EPI.
 
+- Situação de Aprendizagem 8:
+  - Tela de Controle de EPI.
+  - Tela de empréstimo, relatórios e atualização de EPI.
+  - Adição dos status "Emprestado", "Fornecido", "Devolvido", "Danificado" e "Perdido.
+  - Campos "Data da devolução" e "Observação".
+
 ## 🚀 Execução do sistema
 
 1. Instale a ferramenta [`uv`](https://github.com/astral-sh/uv).
@@ -92,6 +98,6 @@ docker container run -d -p 8000:8000 projeto_final
 ## 📋 Backlog
 
 - [x] Situação de Aprendizagem 6
-- [x] Situação de Aprendizagem 7 (branch `sa7`)
-- [ ] Situação de Aprendizagem 8
+- [x] Situação de Aprendizagem 7
+- [x] Situação de Aprendizagem 8
 - [ ] Situação de Aprendizagem 9
