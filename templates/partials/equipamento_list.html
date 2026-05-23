@@ -10,9 +10,9 @@
 </div>
 
 <div class="card">
-  <form method="get" style="padding: 16px 20px">
+  <form id="equipamento-search-form" method="get" style="padding: 16px 20px">
     <div style="display: flex; gap: 0; max-width: 360px">
-      <input type="text" name="q" placeholder="Pesquisar por nome" value="{{ request.GET.q }}" style="flex: 1; border-radius: 8px 0 0 8px">
+      <input id="equipamento-search-input" type="search" name="q" placeholder="Pesquisar por nome" value="{{ request.GET.q }}" style="flex: 1; border-radius: 8px 0 0 8px">
       <button class="btn btn-primary" type="submit" style="border-radius: 0 8px 8px 0; margin-right: 0">Pesquisar</button>
     </div>
   </form>
@@ -20,7 +20,7 @@
 
 <div class="card">
   <div style="overflow-x: auto; padding: 0 16px 16px 16px; margin-top: 16px">
-    <table>
+    <table id="equipamento-table">
       <thead>
         <tr><th>Nome</th><th>Código</th><th>Qtd</th><th>Ativo</th><th>Ações</th></tr>
       </thead>
@@ -65,18 +65,78 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function(){
+    const searchForm = document.getElementById('equipamento-search-form');
+    const searchInput = document.getElementById('equipamento-search-input');
+    const table = document.getElementById('equipamento-table');
+    const basePath = "{% url 'colaboradores:equipamento_lista' %}";
+
+    async function fetchAndUpdate(q, signal){
+      const url = new URL(basePath, window.location.origin);
+      if(q){
+        url.searchParams.set('q', q);
+      }
+
+      const response = await fetch(url.toString(), {
+        method: 'GET',
+        headers: { 'X-Requested-With': 'fetch' },
+        signal,
+      });
+      const html = await response.text();
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const newTable = doc.getElementById('equipamento-table');
+      if(!newTable || !newTable.tBodies || !newTable.tBodies[0] || !table || !table.tBodies || !table.tBodies[0]) return;
+
+      table.tBodies[0].innerHTML = newTable.tBodies[0].innerHTML;
+
+      const nextUrl = new URL(basePath, window.location.origin);
+      if(q){ nextUrl.searchParams.set('q', q); }
+      window.history.replaceState({}, '', nextUrl.pathname + nextUrl.search);
+    }
+
+    if(searchInput && table){
+      let timer = null;
+      let controller = null;
+
+      function triggerSearch(){
+        const q = (searchInput.value || '').trim();
+        const cursorPos = searchInput.selectionStart;
+        if(timer) window.clearTimeout(timer);
+
+        timer = window.setTimeout(async function(){
+          if(controller) controller.abort();
+          controller = new AbortController();
+          try{
+            await fetchAndUpdate(q, controller.signal);
+            searchInput.focus();
+            if(typeof cursorPos === 'number') searchInput.setSelectionRange(cursorPos, cursorPos);
+          } catch(err){
+            if(err && err.name === 'AbortError') return;
+          }
+        }, 250);
+      }
+
+      searchInput.addEventListener('input', triggerSearch);
+
+      if(searchForm){
+        searchForm.addEventListener('submit', function(e){
+          e.preventDefault();
+          triggerSearch();
+        });
+      }
+    }
+
     const modal = document.getElementById('delete-equipamento-modal');
     const form = document.getElementById('delete-equipamento-form');
     const nomeEl = document.getElementById('delete-equipamento-nome');
     const cancelBtn = document.getElementById('delete-equipamento-cancel');
     if(!modal || !form || !nomeEl || !cancelBtn) return;
 
-    document.querySelectorAll('.js-delete[data-url]').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        form.action = btn.getAttribute('data-url');
-        nomeEl.textContent = btn.getAttribute('data-name') || '';
-        if(typeof modal.showModal === 'function') modal.showModal();
-      });
+    document.addEventListener('click', function(e){
+      const btn = e.target && e.target.closest ? e.target.closest('.js-delete[data-url]') : null;
+      if(!btn) return;
+      form.action = btn.getAttribute('data-url');
+      nomeEl.textContent = btn.getAttribute('data-name') || '';
+      if(typeof modal.showModal === 'function') modal.showModal();
     });
 
     cancelBtn.addEventListener('click', function(){

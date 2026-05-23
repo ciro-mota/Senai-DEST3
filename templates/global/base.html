@@ -9,29 +9,53 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
-<div class="main-container">
-    <div class="sidebar">
-        <div class="user-card">
-            <img src="{% static 'colaboradores/img/ciromota.png' %}" alt="usuario">
-            <div class="user-name">Ciro Mota</div>
-            <div class="user-email">ciro.mota@empresa.com</div>
-        </div>
-        <a href="/" class="list-group-item">Dashboard</a>
-        <a href="{% url 'colaboradores:lista' %}" class="list-group-item">Colaboradores</a>
-        <a href="{% url 'colaboradores:equipamento_lista' %}" class="list-group-item">Equipamentos</a>
-        <a href="{% url 'colaboradores:emprestimo_lista' %}" class="list-group-item">Empréstimos</a>
-        <a href="/admin/" class="list-group-item">Admin</a>
-    </div>
-    <div class="content-area">
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}" role="alert">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
+{% if user.is_authenticated %}
+  <div class="main-container">
+      <div class="sidebar">
+          <div class="user-card">
+              <img src="{% static 'colaboradores/img/ciromota.png' %}" alt="usuario">
+              <div class="user-name">{{ user.get_full_name|default:user.username }}</div>
+              <div class="user-email">{{ user.email|default:"" }}</div>
+          </div>
 
-        {% block content %}{% endblock %}
+          <div class="sidebar-header">Cadastros</div>
+          <a href="{% url 'colaboradores:lista' %}" class="list-group-item">Colaborador</a>
+          <a href="{% url 'colaboradores:equipamento_lista' %}" class="list-group-item">Equipamentos</a>
+
+          <div class="sidebar-header">Ação</div>
+          <a href="{% url 'colaboradores:emprestimo_lista' %}" class="list-group-item">Controle de EPI</a>
+
+          <div class="sidebar-header">Relatórios</div>
+          <a href="{% url 'colaboradores:emprestimo_relatorios' %}" class="list-group-item">Empréstimo</a>
+
+          <div style="margin-top: auto; padding-top: 12px">
+            <form method="post" action="{% url 'colaboradores:logout' %}" style="margin: 0">
+              {% csrf_token %}
+              <button type="submit" class="list-group-item" style="width: 100%; text-align: left; background: transparent">Sair</button>
+            </form>
+          </div>
+      </div>
+      <div class="content-area">
+{% else %}
+  <div class="content-area" style="min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+    <div style="width: 100%; max-width: 420px;">
+{% endif %}
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}" role="alert">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+
+{% block content %}{% endblock %}
+
+{% if user.is_authenticated %}
+      </div>
+  </div>
+{% else %}
     </div>
-</div>
+  </div>
+{% endif %}
     {% include 'partials/_scripts.html' %}
 </body>
 </html>

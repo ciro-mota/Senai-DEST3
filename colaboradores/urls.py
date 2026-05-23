@@ -1,6 +1,7 @@
 from django.urls import path
 
 from .views import (
+    ColaboradorLoginView,
     ColaboradorCreateView,
     ColaboradorDeleteView,
     ColaboradorListView,
@@ -10,14 +11,18 @@ from .views import (
     EquipamentoListView,
     EquipamentoUpdateView,
     EmprestimoCreateView,
-    EmprestimoListView,
+    EmprestimoControleListView,
+    EmprestimoRelatorioListView,
     EmprestimoUpdateView,
+    colaborador_logout_view,
 )
 
 
 app_name = "colaboradores"
 
 urlpatterns = [
+    path("login/", ColaboradorLoginView.as_view(), name="login"),
+    path("logout/", colaborador_logout_view, name="logout"),
     path("", ColaboradorListView.as_view(), name="lista"),
     path("colaboradores/novo/", ColaboradorCreateView.as_view(), name="cadastrar"),
     path("colaboradores/<int:pk>/editar/", ColaboradorUpdateView.as_view(), name="editar"),
@@ -32,8 +37,8 @@ urlpatterns += [
 ]
 
 urlpatterns += [
-    path("emprestimos/", EmprestimoListView.as_view(), name="emprestimo_lista"),
-    path("relatorios/", EmprestimoListView.as_view(), name="emprestimo_relatorios"),
+    path("emprestimos/", EmprestimoControleListView.as_view(), name="emprestimo_lista"),
+    path("relatorios/", EmprestimoRelatorioListView.as_view(), name="emprestimo_relatorios"),
     path("emprestimos/novo/", EmprestimoCreateView.as_view(), name="emprestimo_cadastrar"),
     path("emprestimos/<int:pk>/editar/", EmprestimoUpdateView.as_view(), name="emprestimo_editar"),
 ]

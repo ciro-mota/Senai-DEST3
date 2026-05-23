@@ -1,0 +1,62 @@
+{% extends 'global/base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="card" style="padding: 16px 20px">
+  <h1 style="margin-bottom: 6px">Acessar</h1>
+  <p class="text-secondary" style="margin-bottom: 16px">Informe sua matrícula e senha para entrar.</p>
+
+  <form method="post" action="{% url 'colaboradores:login' %}">
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+      <div class="alert alert-danger" role="alert">{{ form.non_field_errors }}</div>
+    {% endif %}
+
+    <input type="hidden" name="next" value="{{ next }}">
+
+    <div class="mb-3">
+      <label class="form-label" for="id_username">{{ form.username.label }}</label>
+      {{ form.username }}
+      {% if form.username.errors %}
+        <div class="text-danger" style="margin-top: 6px; font-size: 12px">{{ form.username.errors }}</div>
+      {% endif %}
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" for="id_password">{{ form.password.label }}</label>
+      {{ form.password }}
+      {% if form.password.errors %}
+        <div class="text-danger" style="margin-top: 6px; font-size: 12px">{{ form.password.errors }}</div>
+      {% endif %}
+    </div>
+
+    <button class="btn btn-primary w-100" type="submit">Entrar</button>
+  </form>
+</div>
+
+{% if request.GET.logged_out %}
+  <dialog id="logged-out-modal" class="app-modal">
+    <div class="card" style="padding: 16px 20px">
+      <h2 style="margin-top: 0">Logout</h2>
+      <p>Você saiu do sistema.</p>
+      <div style="display:flex; justify-content: flex-end; margin-top: 12px">
+        <button id="logged-out-ok" class="btn btn-primary" type="button">Ok</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      const modal = document.getElementById('logged-out-modal');
+      const ok = document.getElementById('logged-out-ok');
+      if(!modal || typeof modal.showModal !== 'function') return;
+      modal.showModal();
+      if(ok){
+        ok.addEventListener('click', function(){ modal.close(); });
+      }
+    });
+  </script>
+{% endif %}
+{% endblock %}

@@ -1,6 +1,7 @@
 from datetime import datetime, time
 
 from django import forms
+from django.contrib.auth.forms import AuthenticationForm
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 
@@ -12,6 +13,42 @@ class ColaboradorForm(forms.ModelForm):
     class Meta:
         model = Colaborador
         fields = ["nome", "matricula", "setor", "cargo", "ativo"]
+
+
+class ColaboradorAuthenticationForm(AuthenticationForm):
+    """Login do sistema usando credenciais do Django (username/senha).
+
+    No contexto do projeto, o campo `username` representa a matrícula.
+    """
+
+    username = forms.CharField(
+        label="Matrícula",
+        widget=forms.TextInput(
+            attrs={
+                "autocomplete": "username",
+                "placeholder": "Digite sua matrícula",
+            }
+        ),
+    )
+
+    password = forms.CharField(
+        label="Senha",
+        strip=False,
+        widget=forms.PasswordInput(
+            attrs={
+                "autocomplete": "current-password",
+                "placeholder": "Digite sua senha",
+            }
+        ),
+    )
+
+    def __init__(self, request=None, *args, **kwargs):
+        super().__init__(request=request, *args, **kwargs)
+        for field_name in ("username", "password"):
+            field = self.fields.get(field_name)
+            if field and getattr(field, "widget", None):
+                existing = field.widget.attrs.get("class", "")
+                field.widget.attrs["class"] = (existing + " form-control").strip()
 
 
 class EquipamentoForm(forms.ModelForm):

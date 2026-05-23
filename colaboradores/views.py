@@ -1,17 +1,43 @@
 from django.contrib import messages
+from django.contrib.auth import logout
+from django.contrib.auth.views import LoginView
+from django.http import HttpRequest, HttpResponse
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
+from django.utils.http import url_has_allowed_host_and_scheme
+from django.views.decorators.http import require_POST
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .forms import ColaboradorForm
+from .forms import ColaboradorAuthenticationForm, ColaboradorForm
 from .forms import EquipamentoForm, EmprestimoCreateForm, EmprestimoUpdateForm
 from .models import Equipamento, Emprestimo
 from .models import Colaborador
 
 
-class ColaboradorListView(ListView):
+class ColaboradorLoginView(LoginView):
+    template_name = "partials/login.html"
+    authentication_form = ColaboradorAuthenticationForm
+    redirect_authenticated_user = True
+
+    def get_success_url(self):
+        next_url = self.request.POST.get("next") or self.request.GET.get("next")
+        if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={self.request.get_host()}):
+            return next_url
+        return str(reverse_lazy("colaboradores:lista"))
+
+
+@require_POST
+def colaborador_logout_view(request: HttpRequest) -> HttpResponse:
+    logout(request)
+    return redirect(f"{reverse_lazy('colaboradores:login')}?logged_out=1")
+
+
+class ColaboradorListView(LoginRequiredMixin, ListView):
     model = Colaborador
     template_name = "partials/colaborador_list.html"
     context_object_name = "colaboradores"
+    login_url = reverse_lazy("colaboradores:login")
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -27,10 +53,11 @@ class ColaboradorListView(ListView):
         return context
 
 
-class ColaboradorCreateView(CreateView):
+class ColaboradorCreateView(LoginRequiredMixin, CreateView):
     model = Colaborador
     form_class = ColaboradorForm
     template_name = "partials/colaborador_form.html"
+    login_url = reverse_lazy("colaboradores:login")
 
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -45,11 +72,12 @@ class ColaboradorCreateView(CreateView):
         return reverse_lazy("colaboradores:cadastrar")
 
 
-class ColaboradorUpdateView(UpdateView):
+class ColaboradorUpdateView(LoginRequiredMixin, UpdateView):
     model = Colaborador
     form_class = ColaboradorForm
     template_name = "partials/colaborador_form.html"
     success_url = reverse_lazy("colaboradores:lista")
+    login_url = reverse_lazy("colaboradores:login")
 
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -61,10 +89,11 @@ class ColaboradorUpdateView(UpdateView):
         return super().form_invalid(form)
 
 
-class ColaboradorDeleteView(DeleteView):
+class ColaboradorDeleteView(LoginRequiredMixin, DeleteView):
     model = Colaborador
     template_name = "partials/colaborador_confirm_delete.html"
     success_url = reverse_lazy("colaboradores:lista")
+    login_url = reverse_lazy("colaboradores:login")
 
     def delete(self, request, *args, **kwargs):
         colaborador = self.get_object()
@@ -72,10 +101,11 @@ class ColaboradorDeleteView(DeleteView):
         return super().delete(request, *args, **kwargs)
 
 
-class EquipamentoListView(ListView):
+class EquipamentoListView(LoginRequiredMixin, ListView):
     model = Equipamento
     template_name = "partials/equipamento_list.html"
     context_object_name = "equipamentos"
+    login_url = reverse_lazy("colaboradores:login")
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -85,10 +115,11 @@ class EquipamentoListView(ListView):
         return queryset
 
 
-class EquipamentoCreateView(CreateView):
+class EquipamentoCreateView(LoginRequiredMixin, CreateView):
     model = Equipamento
     form_class = EquipamentoForm
     template_name = "partials/equipamento_form.html"
+    login_url = reverse_lazy("colaboradores:login")
 
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -104,11 +135,12 @@ class EquipamentoCreateView(CreateView):
         return reverse_lazy("colaboradores:equipamento_cadastrar")
 
 
-class EquipamentoUpdateView(UpdateView):
+class EquipamentoUpdateView(LoginRequiredMixin, UpdateView):
     model = Equipamento
     form_class = EquipamentoForm
     template_name = "partials/equipamento_form.html"
     success_url = reverse_lazy("colaboradores:equipamento_lista")
+    login_url = reverse_lazy("colaboradores:login")
 
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -120,10 +152,11 @@ class EquipamentoUpdateView(UpdateView):
         return super().form_invalid(form)
 
 
-class EquipamentoDeleteView(DeleteView):
+class EquipamentoDeleteView(LoginRequiredMixin, DeleteView):
     model = Equipamento
     template_name = "partials/equipamento_confirm_delete.html"
     success_url = reverse_lazy("colaboradores:equipamento_lista")
+    login_url = reverse_lazy("colaboradores:login")
 
     def delete(self, request, *args, **kwargs):
         equipamento = self.get_object()
@@ -131,14 +164,25 @@ class EquipamentoDeleteView(DeleteView):
         return super().delete(request, *args, **kwargs)
 
 
-class EmprestimoListView(ListView):
+class EmprestimoControleListView(LoginRequiredMixin, ListView):
     model = Emprestimo
-    template_name = "partials/emprestimo_list.html"
+    template_name = "partials/controle_epi_list.html"
     context_object_name = "emprestimos"
+    login_url = reverse_lazy("colaboradores:login")
+
+    def get_queryset(self):
+        return super().get_queryset().select_related("colaborador", "equipamento")
+
+
+class EmprestimoRelatorioListView(LoginRequiredMixin, ListView):
+    model = Emprestimo
+    template_name = "partials/emprestimo_relatorios.html"
+    context_object_name = "emprestimos"
+    login_url = reverse_lazy("colaboradores:login")
 
     def get_queryset(self):
         queryset = super().get_queryset().select_related("colaborador", "equipamento")
-        # simple filters for colaborador name, equipamento name and status (AND)
+        # filtro AND: status, equipamento, colaborador
         nome = self.request.GET.get("colaborador", "").strip()
         epi = self.request.GET.get("equipamento", "").strip()
         status = self.request.GET.get("status", "").strip()
@@ -151,10 +195,11 @@ class EmprestimoListView(ListView):
         return queryset
 
 
-class EmprestimoCreateView(CreateView):
+class EmprestimoCreateView(LoginRequiredMixin, CreateView):
     model = Emprestimo
     form_class = EmprestimoCreateForm
     template_name = "partials/emprestimo_form.html"
+    login_url = reverse_lazy("colaboradores:login")
 
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -170,11 +215,12 @@ class EmprestimoCreateView(CreateView):
         return reverse_lazy("colaboradores:emprestimo_cadastrar")
 
 
-class EmprestimoUpdateView(UpdateView):
+class EmprestimoUpdateView(LoginRequiredMixin, UpdateView):
     model = Emprestimo
     form_class = EmprestimoUpdateForm
     template_name = "partials/emprestimo_form.html"
     success_url = reverse_lazy("colaboradores:emprestimo_lista")
+    login_url = reverse_lazy("colaboradores:login")
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
