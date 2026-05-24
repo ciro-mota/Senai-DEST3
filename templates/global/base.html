@@ -29,10 +29,13 @@
           <a href="{% url 'colaboradores:emprestimo_relatorios' %}" class="list-group-item">Empréstimo</a>
 
           <div style="margin-top: auto; padding-top: 12px">
-            <form method="post" action="{% url 'colaboradores:logout' %}" style="margin: 0">
-              {% csrf_token %}
-              <button type="submit" class="list-group-item" style="width: 100%; text-align: left; background: transparent">Sair</button>
-            </form>
+            <div class="sidebar-footer-actions">
+              <form method="post" action="{% url 'colaboradores:logout' %}" style="margin: 0">
+                {% csrf_token %}
+                <button type="submit" class="list-group-item sidebar-logout">Sair</button>
+              </form>
+              <button type="button" id="theme-toggle" class="btn btn-outline-secondary btn-sm sidebar-theme-toggle" aria-label="Alternar tema">Tema</button>
+            </div>
           </div>
       </div>
       <div class="content-area">
