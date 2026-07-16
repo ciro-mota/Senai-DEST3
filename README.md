@@ -65,7 +65,7 @@ projeto_final/
 2. Inicie um novo projeto com o comando `uv init`.
 3. Crie o ambiente virtual com `uv venv`.
 4. Acesse o ambiente virtual, se necessário, `source .venv/bin/activate`.
-5. Instale as dependências com `uv add Django`.
+5. Instale as dependências com `uv add "Django>=6.0.5"`.
 6. Execute as migrações com `python manage.py migrate`.
 7. Inicie o servidor com `python manage.py runserver`.
 8. Crie o usuário administrativo manualmente com `python manage.py createsuperuser`.
@@ -92,6 +92,6 @@ docker container run -d -p 8000:8000 projeto_final
 ## 📋 Backlog
 
 - [x] Situação de Aprendizagem 6
-- [x] Situação de Aprendizagem 7 (branch `sa7`)
-- [ ] Situação de Aprendizagem 8
-- [ ] Situação de Aprendizagem 9
+- [x] Situação de Aprendizagem 7 (branch sa7)
+- [x] Situação de Aprendizagem 8 (branch sa8)
+- [x] Situação de Aprendizagem 9 (branch sa9)
