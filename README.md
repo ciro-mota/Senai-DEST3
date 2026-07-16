@@ -103,6 +103,6 @@ docker container run -d -p 8000:8000 projeto_final
 ## 📋 Backlog
 
 - [x] Situação de Aprendizagem 6
-- [x] Situação de Aprendizagem 7
-- [x] Situação de Aprendizagem 8
-- [x] Situação de Aprendizagem 9
+- [x] Situação de Aprendizagem 7 (branch sa7)
+- [x] Situação de Aprendizagem 8 (branch sa8)
+- [x] Situação de Aprendizagem 9 (branch sa9)
