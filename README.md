@@ -54,6 +54,11 @@ projeto_final/
   - Garantia de dados salvos e persistidos no banco de dados.
   - Disponibilização de um arquivo `Dockerfile`.
 
+- Situação de Aprendizagem 7:
+  - Tela Base com menu lateral para navegação e foto do usuário logado.
+  - Tela Cadastro de Equipamentos.
+  - Tela de Controle de EPI.
+
 ## 🚀 Execução do sistema
 
 1. Instale a ferramenta [`uv`](https://github.com/astral-sh/uv).

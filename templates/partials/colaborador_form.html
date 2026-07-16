@@ -1,0 +1,41 @@
+{% extends 'global/base.html' %}
+
+{% block title %}{% if object %}Editar colaborador{% else %}Novo colaborador{% endif %}{% endblock %}
+
+{% block content %}
+<h1>{% if object %}Editar colaborador{% else %}Cadastrar colaborador{% endif %}</h1>
+
+<div class="card" style="max-width:600px">
+  <form method="post" style="padding: 16px 20px">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label class="form-label">Nome</label>
+      {{ form.nome }}
+      {% if form.nome.errors %}<small style="color: var(--color-text-danger)">{{ form.nome.errors }}</small>{% endif %}
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Matrícula</label>
+      {{ form.matricula }}
+      {% if form.matricula.errors %}<small style="color: var(--color-text-danger)">{{ form.matricula.errors }}</small>{% endif %}
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Setor</label>
+      {{ form.setor }}
+      {% if form.setor.errors %}<small style="color: var(--color-text-danger)">{{ form.setor.errors }}</small>{% endif %}
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Cargo</label>
+      {{ form.cargo }}
+      {% if form.cargo.errors %}<small style="color: var(--color-text-danger)">{{ form.cargo.errors }}</small>{% endif %}
+    </div>
+    <div class="form-check mb-3">
+      {{ form.ativo }}
+      <label class="form-check-label" for="{{ form.ativo.id_for_label }}">Ativo</label>
+    </div>
+    <div>
+      <button class="btn btn-primary" type="submit">Salvar</button>
+      <a class="btn btn-outline-secondary" href="{% url 'colaboradores:lista' %}">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
