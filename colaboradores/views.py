@@ -3,7 +3,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from .forms import ColaboradorForm
-from .forms import EquipamentoForm, EmprestimoForm
+from .forms import EquipamentoForm, EmprestimoCreateForm, EmprestimoUpdateForm
 from .models import Equipamento, Emprestimo
 from .models import Colaborador
 
@@ -153,7 +153,7 @@ class EmprestimoListView(ListView):
 
 class EmprestimoCreateView(CreateView):
     model = Emprestimo
-    form_class = EmprestimoForm
+    form_class = EmprestimoCreateForm
     template_name = "partials/emprestimo_form.html"
 
     def form_valid(self, form):
@@ -172,7 +172,7 @@ class EmprestimoCreateView(CreateView):
 
 class EmprestimoUpdateView(UpdateView):
     model = Emprestimo
-    form_class = EmprestimoForm
+    form_class = EmprestimoUpdateForm
     template_name = "partials/emprestimo_form.html"
     success_url = reverse_lazy("colaboradores:emprestimo_lista")
 

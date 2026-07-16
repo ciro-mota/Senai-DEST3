@@ -8,6 +8,11 @@
 <div class="card" style="max-width:700px">
   <form method="post" style="padding: 16px 20px">
     {% csrf_token %}
+
+    {% if form.non_field_errors %}
+      <div class="alert alert-danger" role="alert">{{ form.non_field_errors }}</div>
+    {% endif %}
+
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
       <div class="mb-3">
         <label class="form-label">Colaborador</label>
@@ -24,32 +29,44 @@
       <div class="mb-3">
         <label class="form-label">Quantidade</label>
         {{ form.quantidade }}
+        {% if form.quantidade.errors %}<small style="color: var(--color-text-danger)">{{ form.quantidade.errors }}</small>{% endif %}
       </div>
       <div class="mb-3">
         <label class="form-label">Data de entrega</label>
         {{ form.data_entrega }}
+        {% if form.data_entrega.errors %}<small style="color: var(--color-text-danger)">{{ form.data_entrega.errors }}</small>{% endif %}
       </div>
       <div class="mb-3">
         <label class="form-label">Data prevista de devolução</label>
         {{ form.data_prevista_devolucao }}
+        {% if form.data_prevista_devolucao.errors %}<small style="color: var(--color-text-danger)">{{ form.data_prevista_devolucao.errors }}</small>{% endif %}
       </div>
     </div>
 
     <div class="mb-3">
       <label class="form-label">Status</label>
       {{ form.status }}
+      {% if form.status.errors %}<small style="color: var(--color-text-danger)">{{ form.status.errors }}</small>{% endif %}
     </div>
 
+    {% with st=form.status.value %}
+    {% if st == 'devolvido' or st == 'danificado' or st == 'perdido' %}
+    <div id="devolucao-fields">
+    {% else %}
     <div id="devolucao-fields" style="display:none">
+    {% endif %}
       <div class="mb-3">
         <label class="form-label">Data da devolução</label>
         {{ form.data_devolucao }}
+        {% if form.data_devolucao.errors %}<small style="color: var(--color-text-danger)">{{ form.data_devolucao.errors }}</small>{% endif %}
       </div>
       <div class="mb-3">
         <label class="form-label">Observação na devolução</label>
         {{ form.observacao_devolucao }}
+        {% if form.observacao_devolucao.errors %}<small style="color: var(--color-text-danger)">{{ form.observacao_devolucao.errors }}</small>{% endif %}
       </div>
     </div>
+    {% endwith %}
 
     <div>
       <button class="btn btn-primary" type="submit">Salvar</button>

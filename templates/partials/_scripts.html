@@ -1,14 +1,19 @@
 <script>
   function toggleDevolucao(){
-    const sel = document.querySelector('[name="status"]');
+    const container = document.getElementById('devolucao-fields');
+    if(!container) return;
+    const form = container.closest('form') || document;
+    const sel = form.querySelector('select[name="status"], [name="status"]');
     if(!sel) return;
     const status = sel.value;
     const show = ['devolvido','danificado','perdido'].includes(status);
-    const container = document.getElementById('devolucao-fields');
-    if(container) container.style.display = show ? 'block' : 'none';
+    container.style.display = show ? 'block' : 'none';
   }
   document.addEventListener('DOMContentLoaded', function(){
-    const sel = document.querySelector('[name="status"]');
-    if(sel){ sel.addEventListener('change', toggleDevolucao); toggleDevolucao(); }
+    const container = document.getElementById('devolucao-fields');
+    const form = container ? (container.closest('form') || document) : document;
+    const sel = form.querySelector('select[name="status"], [name="status"]');
+    if(sel){ sel.addEventListener('change', toggleDevolucao); }
+    toggleDevolucao();
   });
 </script>
