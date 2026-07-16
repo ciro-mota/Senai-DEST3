@@ -50,12 +50,23 @@ body {
 }
 
 .sidebar {
-    width: 168px;
+    width: clamp(200px, 22vw, 280px);
     border-right: 0.5px solid var(--color-border-tertiary);
     background: var(--color-background-secondary);
     padding: 12px 0;
     flex-shrink: 0;
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-header {
+    padding: 10px 16px 6px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-text-tertiary);
 }
 
 .user-card {
@@ -70,6 +81,8 @@ body {
     height: 64px;
     border-radius: 50%;
     margin-bottom: 10px;
+    object-fit: cover;
+    object-position: center;
 }
 
 .user-name {
@@ -82,6 +95,9 @@ body {
 .user-email {
     font-size: 11px;
     color: var(--color-text-secondary);
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    line-height: 1.25;
 }
 
 .list-group-item {
@@ -135,25 +151,7 @@ body {
 
 .card table {
     margin: 0;
-    width: calc(100% + 40px);
-    margin-left: -20px;
-    margin-right: -20px;
-}
-
-.card table th:first-child {
-    padding-left: 20px;
-}
-
-.card table td:first-child {
-    padding-left: 20px;
-}
-
-.card table th:last-child {
-    padding-right: 20px;
-}
-
-.card table td:last-child {
-    padding-right: 20px;
+    width: 100%;
 }
 
 .card-title {
@@ -166,6 +164,7 @@ body {
 .btn {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 6px;
     padding: 7px 14px;
     border: 0.5px solid var(--color-border-secondary);
@@ -180,6 +179,13 @@ body {
 
 .btn:hover {
     background: var(--color-background-secondary);
+}
+
+/* Remove browser default focus ring (blue outline) */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus,
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: none;
+    box-shadow: none;
 }
 
 .btn-primary {
@@ -243,10 +249,11 @@ body {
 }
 
 .form-control:focus, .form-select:focus {
-    border-color: #1D9E75;
+    border-color: var(--color-border-primary);
     background: var(--color-background-primary);
     color: var(--color-text-primary);
     outline: none;
+    box-shadow: none;
 }
 
 .form-label {
@@ -303,6 +310,7 @@ dialog.app-modal .card strong {
 }
 
 input[type="text"],
+input[type="search"],
 input[type="email"],
 input[type="password"],
 input[type="number"],
@@ -320,6 +328,20 @@ select {
     font-family: inherit;
 }
 
+input[type="text"]:focus,
+input[type="search"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+input[type="datetime-local"]:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    box-shadow: none;
+    border-color: var(--color-border-primary);
+}
+
 input[type="date"] {
     appearance: none;
     -webkit-appearance: none;
@@ -329,7 +351,7 @@ table {
     width: 100%;
     border-collapse: collapse;
     font-size: 13px;
-    table-layout: fixed;
+    table-layout: auto;
 }
 
 th {
@@ -346,9 +368,8 @@ td {
     padding: 8px 10px;
     border-bottom: 0.5px solid var(--color-border-tertiary);
     color: var(--color-text-primary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: normal;
+    overflow-wrap: anywhere;
 }
 
 tr:last-child td {

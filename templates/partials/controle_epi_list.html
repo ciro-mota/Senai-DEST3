@@ -1,0 +1,43 @@
+{% extends 'global/base.html' %}
+
+{% block title %}Controle de EPI{% endblock %}
+
+{% block content %}
+<h1>Controle de EPI</h1>
+
+<div style="margin-bottom: 16px">
+  <a class="btn btn-primary btn-sm" href="{% url 'colaboradores:emprestimo_cadastrar' %}">+ Registrar empréstimo</a>
+</div>
+
+<div class="card">
+  <div style="padding: 0 16px 16px 16px; margin-top: 16px">
+    <table>
+      <thead>
+        <tr>
+          <th>Colaborador</th>
+          <th>EPI</th>
+          <th>Entrega</th>
+          <th>Prev. Devolução</th>
+          <th>Status</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for em in emprestimos %}
+          <tr>
+            <td>{{ em.colaborador.nome }}</td>
+            <td>{{ em.equipamento.nome }}</td>
+            <td>{{ em.data_entrega|date:"d/m/Y" }}</td>
+            <td>{% if em.data_prevista_devolucao %}{{ em.data_prevista_devolucao|date:"d/m/Y" }}{% else %}—{% endif %}</td>
+            <td>{{ em.get_status_display }}</td>
+            <td style="white-space:nowrap"><a class="btn btn-sm btn-outline-primary" href="{% url 'colaboradores:emprestimo_editar' em.pk %}">Editar</a></td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="6" style="text-align: center; color: var(--color-text-secondary)">Nenhum registro encontrado.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

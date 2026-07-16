@@ -64,6 +64,11 @@ projeto_final/
   - Tela de empréstimo, relatórios e atualização de EPI.
   - Adição dos status "Emprestado", "Fornecido", "Devolvido", "Danificado" e "Perdido.
   - Campos "Data da devolução" e "Observação".
+  
+- Situação de Aprendizagem 9:
+  - Tela de Login.
+  - Tela de Logout.
+  - Tela de Controle de usuário.
 
 ## 🚀 Execução do sistema
 
